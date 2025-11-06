@@ -21,7 +21,6 @@ namespace Sportteam
         public string SportType;
         public double BestResult;
         public bool IsTimeBased;
-
         public SportsTeam(string _fullName, string _sportType, double _bestResult)
         {
             FullName = _fullName;
@@ -36,7 +35,7 @@ namespace Sportteam
         static SportsTeam[] InputTeams()
         {
             SportsTeam[] teams = new SportsTeam[5];
-            string[] timeBasedSports = { "плавание", "бег", "лыжи", "велоспорт", "гонки" };
+            string[] timeBasedSports = { "плавание", "бег", "лыжи", "велоспорт", "гонки" , "бассейнп"};
             for (int i = 0; i < 5; i++)
             {
                 Console.ForegroundColor = ConsoleColor.Magenta;
@@ -93,7 +92,7 @@ namespace Sportteam
                 }
             }
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"\n===АБСОЛЮТНО ЛУЧШИЙ СПОРТСМЕН===");
+            Console.WriteLine($"\n|||||АБСОЛЮТНО ЛУЧШИЙ СПОРТСМЕН|||||");
             Console.WriteLine($"Фамилия: {absoluteBest.FullName}");
             Console.WriteLine($"Вид спорта: {absoluteBest.SportType}");
             Console.WriteLine($"Результат: {absoluteBest.BestResult}");
@@ -119,12 +118,11 @@ namespace Sportteam
             }
             var sportsGroups = teams.GroupBy(t => t.SportType);
             Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine("\n---ЛУЧШИЕ СПОРТСМЕНЫ ПО ВИДАМ СПОРТА---");
+            Console.WriteLine("\n|||ЛУЧШИЕ СПОРТСМЕНЫ ПО ВИДАМ СПОРТА|||");
             foreach (var group in sportsGroups)
             {
                 SportsTeam bestInSport = group.First();
                 bool isTimeBased = group.First().IsTimeBased;
-
                 foreach (var athlete in group)
                 {
                     if ((isTimeBased && athlete.BestResult < bestInSport.BestResult) || (!isTimeBased && athlete.BestResult > bestInSport.BestResult))
