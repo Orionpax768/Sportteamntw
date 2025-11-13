@@ -32,41 +32,92 @@ namespace Sportteam
 
     internal class Program
     {
+        static bool ContainsDigits(string input)
+        {
+            foreach (char c in input)
+            {
+                if (char.IsDigit(c))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         static SportsTeam[] InputTeams()
         {
             SportsTeam[] teams = new SportsTeam[5];
-            string[] timeBasedSports = { "плавание", "бег", "лыжи", "велоспорт", "гонки" , "бассейнп"};
+            string[] timeBasedSports = { "плавание", "бег", "лыжи", "велоспорт", "гонки", "бассейн" };
             for (int i = 0; i < 5; i++)
             {
                 Console.ForegroundColor = ConsoleColor.Magenta;
                 Console.WriteLine($"\nСпортсмен {i + 1}");
-                Console.Write($"Фамилия {i + 1}: ");
-                string fullName = Console.ReadLine();
-                if (string.IsNullOrWhiteSpace(fullName))
+                string fullName;
+                do
                 {
-                    throw new Exception("Фамилия не может быть пустой!");
-                }
-
-                Console.Write($"Вид спорта {i + 1}: ");
-                string sportType = Console.ReadLine();
-                if (string.IsNullOrWhiteSpace(sportType))
+                    Console.Write($"Фамилия {i + 1}: ");
+                    fullName = Console.ReadLine();
+                    if (String.IsNullOrWhiteSpace(fullName))
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("Фамилия не может быть пустой!");
+                        Console.ForegroundColor = ConsoleColor.Magenta;
+                    }
+                    else if (ContainsDigits(fullName))
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("Фамилия не может содержать цифры!");
+                        Console.ForegroundColor = ConsoleColor.Magenta;
+                    }
+                } 
+                while (String.IsNullOrWhiteSpace(fullName) || ContainsDigits(fullName));
+                string sportType;
+                do
                 {
-                    throw new Exception("Вид спорта не может быть пустым!");
-                }
+                    Console.Write($"Вид спорта {i + 1}: ");
+                    sportType = Console.ReadLine();
+                    if (String.IsNullOrWhiteSpace(sportType))
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("Вид спорта не может быть пустым!");
+                        Console.ForegroundColor = ConsoleColor.Magenta;
+                    }
+                    else if (ContainsDigits(sportType))
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("Вид спорта не может содержать цифры!");
+                        Console.ForegroundColor = ConsoleColor.Magenta;
+                    }
+                } 
+                while (String.IsNullOrWhiteSpace(sportType) || ContainsDigits(sportType));
                 bool isTimeBased = timeBasedSports.Contains(sportType.ToLower());
-                Console.Write($"Лучший результат {i + 1}: ");
-                string input = Console.ReadLine();
-                if (string.IsNullOrWhiteSpace(input))
+                double bestResult;
+                while (true)
                 {
-                    throw new Exception("Результат не может быть пустым!");
-                }
-                if (!double.TryParse(input, out double bestResult))
-                {
-                    throw new Exception("Введите число!");
-                }
-                if (bestResult < 0)
-                {
-                    throw new Exception("Результат не может быть отрицательным!");
+                    Console.Write($"Лучший результат {i + 1}: ");
+                    string input = Console.ReadLine();
+                    if (string.IsNullOrWhiteSpace(input))
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("Результат не может быть пустым!");
+                        Console.ForegroundColor = ConsoleColor.Magenta;
+                    }
+                    else if (!Double.TryParse(input, out bestResult))
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("Введите число!");
+                        Console.ForegroundColor = ConsoleColor.Magenta;
+                    }
+                    else if (bestResult < 0)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("Результат не может быть отрицательным!");
+                        Console.ForegroundColor = ConsoleColor.Magenta;
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
                 teams[i] = new SportsTeam(fullName, sportType, bestResult);
                 teams[i].IsTimeBased = isTimeBased;
@@ -136,7 +187,6 @@ namespace Sportteam
                 Console.WriteLine($"Результат: {bestInSport.BestResult}");
             }
         }
-
         static void Main(string[] args)
         {
             while (true)
@@ -180,7 +230,6 @@ namespace Sportteam
                     Console.WriteLine("Нажмите любую клавишу для продолжения...");
                     Console.ReadKey();
                 }
-                Console.ReadKey();
             }
         }
     }
