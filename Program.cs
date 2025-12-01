@@ -1,5 +1,5 @@
 //*******************************************************************************************
-//* Практическая работа №15                                                                 *
+//* Практическая работа №14                                                                 *
 //* Выполнил: Абдуллаев Э.С., группа 2-ИСПд                                                 *
 //* Задание: Написать программу, выполняющую следующие действия:                            *
 //*-Ввод с клавиатуры данных в массив, состоящий из 5 элементов типа «Спортивная команда».  *
@@ -60,16 +60,14 @@ namespace Sportteam
                     if (String.IsNullOrWhiteSpace(fullName))
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("Фамилия не может быть пустой!");
-                        Console.ForegroundColor = ConsoleColor.Magenta;
+                        throw new Exception("Фамилия не может быть пустой!");
                     }
                     else if (ContainsDigits(fullName))
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("Фамилия не может содержать цифры!");
-                        Console.ForegroundColor = ConsoleColor.Magenta;
+                        throw new Exception("Фамилия не может содержать цифры!");
                     }
-                } 
+                }
                 while (String.IsNullOrWhiteSpace(fullName) || ContainsDigits(fullName));
                 string sportType;
                 do
@@ -79,16 +77,14 @@ namespace Sportteam
                     if (String.IsNullOrWhiteSpace(sportType))
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("Вид спорта не может быть пустым!");
-                        Console.ForegroundColor = ConsoleColor.Magenta;
+                        throw new Exception("Вид спорта не может быть пустым!");
                     }
                     else if (ContainsDigits(sportType))
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("Вид спорта не может содержать цифры!");
-                        Console.ForegroundColor = ConsoleColor.Magenta;
+                        throw new Exception("Вид спорта не может содержать цифры!");
                     }
-                } 
+                }
                 while (String.IsNullOrWhiteSpace(sportType) || ContainsDigits(sportType));
                 bool isTimeBased = timeBasedSports.Contains(sportType.ToLower());
                 double bestResult;
@@ -96,23 +92,20 @@ namespace Sportteam
                 {
                     Console.Write($"Лучший результат {i + 1}: ");
                     string input = Console.ReadLine();
-                    if (string.IsNullOrWhiteSpace(input))
+                    if (String.IsNullOrWhiteSpace(input))
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("Результат не может быть пустым!");
-                        Console.ForegroundColor = ConsoleColor.Magenta;
+                        throw new Exception("Результат не может быть пустым!");
                     }
                     else if (!Double.TryParse(input, out bestResult))
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("Введите число!");
-                        Console.ForegroundColor = ConsoleColor.Magenta;
+                        throw new Exception("Введите число!");
                     }
                     else if (bestResult < 0)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("Результат не может быть отрицательным!");
-                        Console.ForegroundColor = ConsoleColor.Magenta;
+                        throw new Exception("Результат не может быть отрицательным!");
                     }
                     else
                     {
@@ -194,14 +187,13 @@ namespace Sportteam
                 try
                 {
                     Console.Clear();
-                    Console.Title = "Практическая работа №13";
+                    Console.Title = "Практическая работа №14";
                     Console.ForegroundColor = ConsoleColor.Yellow;
                     Console.WriteLine("Здравствуйте!");
                     Console.WriteLine("Введите данные o 5 спортсменов:");
                     SportsTeam[] teams = InputTeams();
                     FindBestBySport(teams);
                     FindAbsoluteBest(teams);
-                    Console.BackgroundColor = ConsoleColor.Blue;
                     Console.ForegroundColor = ConsoleColor.White;
                     Console.WriteLine("\nВыберите действие:");
                     Console.WriteLine("1 - Новый поиск");
@@ -212,14 +204,15 @@ namespace Sportteam
                     {
                         case "1":
                             Console.Clear();
-                            Console.ForegroundColor = ConsoleColor.Magenta;
+                            Console.ForegroundColor = ConsoleColor.Green;
                             Console.WriteLine("Новый поиск...");
                             break;
                         case "0":
-                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.ForegroundColor = ConsoleColor.Magenta;
                             Console.WriteLine("Программа завершена.");
                             return;
                         default:
+                            Console.ForegroundColor = ConsoleColor.Red;
                             throw new Exception("Неверный выбор!");
                     }
                 }
