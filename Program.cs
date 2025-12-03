@@ -84,7 +84,6 @@ namespace SportTeam
                     }
                 }
             }
-
             return teams;
         }
 
