@@ -91,7 +91,7 @@ namespace SportTeam
         {
             if (String.IsNullOrWhiteSpace(searchSport))
             {
-                throw new ArgumentException("Вид спорта не может быть пустым.", nameof(searchSport));
+                throw new ArgumentException("Вид спорта не может быть пустым.");
             }
             bool found = false;
             Console.WriteLine($"\nСпортсмены, занимающиеся видом спорта {searchSport}:");
