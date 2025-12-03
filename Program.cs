@@ -1,229 +1,194 @@
 //*******************************************************************************************
-//* Практическая работа №14                                                                 *
+//* Практическая работа №15                                                                 *
 //* Выполнил: Абдуллаев Э.С., группа 2-ИСПд                                                 *
 //* Задание: Написать программу, выполняющую следующие действия:                            *
-//*-Ввод с клавиатуры данных в массив, состоящий из 5 элементов типа «Спортивная команда».  *
-//*-Вывод на экран информации о всех спортсменах, занимающихся указанным видом спорта       *
-//*(вид спорта вводится с клавиатуры).                                                      *
-//*-Определить спортсмена с лучшим результатом.                                             *
+//* - Ввод с клавиатуры данных в массив, состоящий из 5 элементов типа «Спортивная команда».*
+//* - Вывод на экран информации о всех спортсменах, занимающихся указанным видом спорта     *
+//*   (вид спорта вводится с клавиатуры).                                                   *
+//* - Определить спортсмена с лучшим результатом (среди указанного вида спорта).            *
 //*******************************************************************************************
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
-namespace Sportteam
+namespace SportTeam
 {
-    public struct SportsTeam
-    {
-        public string FullName;
-        public string SportType;
-        public double BestResult;
-        public bool IsTimeBased;
-        public SportsTeam(string _fullName, string _sportType, double _bestResult)
-        {
-            FullName = _fullName;
-            SportType = _sportType;
-            BestResult = _bestResult;
-            IsTimeBased = false;
-        }
-    }
-
     internal class Program
     {
-        static bool ContainsDigits(string input)
+        public struct SportsTeam
         {
-            foreach (char c in input)
+            public string FullName;
+            public string SportType;
+            public double BestResult;
+
+            public SportsTeam(string fullName, string sportType, double bestResult)
             {
-                if (char.IsDigit(c))
-                {
-                    return true;
-                }
+                FullName = fullName;
+                SportType = sportType;
+                BestResult = bestResult;
             }
-            return false;
         }
 
-        static SportsTeam[] InputTeams()
+        static string ReadNonEmptyString(string prompt)
         {
-            SportsTeam[] teams = new SportsTeam[5];
-            string[] timeBasedSports = { "плавание", "бег", "лыжи", "велоспорт", "гонки", "бассейн" };
-            for (int i = 0; i < 5; i++)
+            Console.Write(prompt);
+            string input = Console.ReadLine();
+            if (String.IsNullOrWhiteSpace(input))
             {
-                Console.ForegroundColor = ConsoleColor.Magenta;
-                Console.WriteLine($"\nСпортсмен {i + 1}");
-                string fullName;
-                do
-                {
-                    Console.Write($"Фамилия {i + 1}: ");
-                    fullName = Console.ReadLine();
-                    if (String.IsNullOrWhiteSpace(fullName))
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        throw new Exception("Фамилия не может быть пустой!");
-                    }
-                    else if (ContainsDigits(fullName))
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        throw new Exception("Фамилия не может содержать цифры!");
-                    }
-                }
-                while (String.IsNullOrWhiteSpace(fullName) || ContainsDigits(fullName));
-                string sportType;
-                do
-                {
-                    Console.Write($"Вид спорта {i + 1}: ");
-                    sportType = Console.ReadLine();
-                    if (String.IsNullOrWhiteSpace(sportType))
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        throw new Exception("Вид спорта не может быть пустым!");
-                    }
-                    else if (ContainsDigits(sportType))
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        throw new Exception("Вид спорта не может содержать цифры!");
-                    }
-                }
-                while (String.IsNullOrWhiteSpace(sportType) || ContainsDigits(sportType));
-                bool isTimeBased = timeBasedSports.Contains(sportType.ToLower());
-                double bestResult;
+                throw new ArgumentException("Значение не может быть пустым или состоять только из пробелов.");
+            }
+            return input;
+        }
+
+        static double ReadDouble(string prompt)
+        {
+            Console.Write(prompt);
+            string input = Console.ReadLine();
+            if (!Double.TryParse(input, out double result))
+            {
+                throw new ArgumentException("Некорректное числовое значение.");
+            }
+            return result;
+        }
+
+        static SportsTeam[] InputTeams(int count)
+        {
+            SportsTeam[] teams = new SportsTeam[count];
+            for (int i = 0; i < count; i++)
+            {
                 while (true)
                 {
-                    Console.Write($"Лучший результат {i + 1}: ");
-                    string input = Console.ReadLine();
-                    if (String.IsNullOrWhiteSpace(input))
+                    try
                     {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        throw new Exception("Результат не может быть пустым!");
-                    }
-                    else if (!Double.TryParse(input, out bestResult))
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        throw new Exception("Введите число!");
-                    }
-                    else if (bestResult < 0)
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        throw new Exception("Результат не может быть отрицательным!");
-                    }
-                    else
-                    {
+                        Console.WriteLine($"\nВведите данные для спортсмена №{i + 1}:");
+                        string fullName = ReadNonEmptyString("Фамилия: ");
+                        string sportType = ReadNonEmptyString("Вид спорта: ");
+                        double bestResult = ReadDouble("Лучший результат (число): ");
+                        teams[i] = new SportsTeam(fullName, sportType, bestResult);
                         break;
                     }
+                    catch (ArgumentException ex)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine($"Ошибка: {ex.Message}");
+                        Console.WriteLine("Нажмите любую клавишу для продолжения...");
+                        Console.ReadKey();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine($"Ошибка: {ex.Message}");
+                        Console.WriteLine("Нажмите любую клавишу для продолжения...");
+                        Console.ReadKey();
+                    }
                 }
-                teams[i] = new SportsTeam(fullName, sportType, bestResult);
-                teams[i].IsTimeBased = isTimeBased;
             }
+
             return teams;
         }
 
-        static void FindAbsoluteBest(SportsTeam[] teams)
+        static void DisplayAthletesBySport(SportsTeam[] teams, string searchSport)
         {
-            if (teams.Length == 0)
+            if (String.IsNullOrWhiteSpace(searchSport))
             {
-                throw new Exception("Нет данных о спортсменах");
+                throw new ArgumentException("Вид спорта не может быть пустым.", nameof(searchSport));
             }
-            SportsTeam absoluteBest = teams[0];
-            double bestScore = CalculateScore(teams[0]);
-            for (int i = 1; i < teams.Length; i++)
+            bool found = false;
+            Console.WriteLine($"\nСпортсмены, занимающиеся видом спорта {searchSport}:");
+            foreach (SportsTeam team in teams)
             {
-                double currentScore = CalculateScore(teams[i]);
-                if (currentScore > bestScore)
+                if (team.SportType.Equals(searchSport, StringComparison.OrdinalIgnoreCase))
                 {
-                    bestScore = currentScore;
-                    absoluteBest = teams[i];
+                    Console.WriteLine($"ФИО: {team.FullName}, Лучший результат: {team.BestResult}");
+                    found = true;
                 }
             }
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"\n|||||АБСОЛЮТНО ЛУЧШИЙ СПОРТСМЕН|||||");
-            Console.WriteLine($"Фамилия: {absoluteBest.FullName}");
-            Console.WriteLine($"Вид спорта: {absoluteBest.SportType}");
-            Console.WriteLine($"Результат: {absoluteBest.BestResult}");
-        }
-
-        static double CalculateScore(SportsTeam team)
-        {
-            if (team.IsTimeBased)
+            if (!found)
             {
-                return 1000 / team.BestResult;
-            }
-            else
-            {
-                return team.BestResult;
+                Console.WriteLine("Спортсмены с указанным видом спорта не найдены.");
             }
         }
 
-        static void FindBestBySport(SportsTeam[] teams)
+        static bool FindBestAthleteInSport(SportsTeam[] teams, string searchSport, out SportsTeam bestAthlete)
         {
-            if (teams.Length == 0)
+            if (teams == null)
+                throw new ArgumentNullException("Строка не может быть пустой!");
+            if (String.IsNullOrWhiteSpace(searchSport))
+                throw new ArgumentException("Вид спорта не может быть пустым!");
+            bestAthlete = new SportsTeam();
+            bool found = false;
+            foreach (SportsTeam team in teams)
             {
-                throw new Exception("Нет данных о спортсменах");
-            }
-            var sportsGroups = teams.GroupBy(t => t.SportType);
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine("\n|||ЛУЧШИЕ СПОРТСМЕНЫ ПО ВИДАМ СПОРТА|||");
-            foreach (var group in sportsGroups)
-            {
-                SportsTeam bestInSport = group.First();
-                bool isTimeBased = group.First().IsTimeBased;
-                foreach (var athlete in group)
+                if (team.SportType.Equals(searchSport, StringComparison.OrdinalIgnoreCase))
                 {
-                    if ((isTimeBased && athlete.BestResult < bestInSport.BestResult) || (!isTimeBased && athlete.BestResult > bestInSport.BestResult))
+                    if (!found || team.BestResult > bestAthlete.BestResult)
                     {
-                        bestInSport = athlete;
+                        bestAthlete = team;
+                        found = true;
                     }
                 }
-                Console.ForegroundColor = ConsoleColor.DarkCyan;
-                Console.WriteLine($"\n{group.Key.ToUpper()}:");
-                Console.WriteLine($"{bestInSport.FullName}");
-                Console.WriteLine($"Результат: {bestInSport.BestResult}");
             }
+            return found;
         }
+
         static void Main(string[] args)
         {
-            while (true)
+            const int teamCount = 5;
+            SportsTeam[] teams = InputTeams(teamCount);
+            Console.Write("\nВведите вид спорта для поиска: ");
+            string searchSport = Console.ReadLine();
+            try
             {
-                try
+                DisplayAthletesBySport(teams, searchSport);
+                if (FindBestAthleteInSport(teams, searchSport, out SportsTeam bestInSport))
                 {
-                    Console.Clear();
-                    Console.Title = "Практическая работа №14";
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine("Здравствуйте!");
-                    Console.WriteLine("Введите данные o 5 спортсменов:");
-                    SportsTeam[] teams = InputTeams();
-                    FindBestBySport(teams);
-                    FindAbsoluteBest(teams);
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.WriteLine("\nВыберите действие:");
-                    Console.WriteLine("1 - Новый поиск");
-                    Console.WriteLine("0 - Выйти из программы");
-                    Console.Write("Ваш выбор: ");
-                    string choice = Console.ReadLine();
-                    switch (choice)
-                    {
-                        case "1":
-                            Console.Clear();
-                            Console.ForegroundColor = ConsoleColor.Green;
-                            Console.WriteLine("Новый поиск...");
-                            break;
-                        case "0":
-                            Console.ForegroundColor = ConsoleColor.Magenta;
-                            Console.WriteLine("Программа завершена.");
-                            return;
-                        default:
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            throw new Exception("Неверный выбор!");
-                    }
+                    Console.WriteLine($"Спортсмен с лучшим результатом в виде спорта {searchSport}:");
+                    Console.WriteLine($"ФИО: {bestInSport.FullName} " +
+                        $"\nВид спорта: {bestInSport.SportType} " +
+                        $"\nРезультат: {bestInSport.BestResult}");
                 }
-                catch (Exception ex)
+                else if (!String.IsNullOrWhiteSpace(searchSport))
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine($"Ошибка: {ex.Message}");
-                    Console.WriteLine("Нажмите любую клавишу для продолжения...");
-                    Console.ReadKey();
+                    Console.WriteLine("\nНевозможно определить лучшего спортсмена, так как никто не занимается спорта.");
+                }
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine("\nВыберите действие:");
+                Console.WriteLine("1 - Новый поиск");
+                Console.WriteLine("0 - Выйти из программы");
+                Console.Write("Ваш выбор: ");
+                string choice = Console.ReadLine();
+                switch (choice)
+                {
+                    case "1":
+                        Console.Clear();
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("Новый поиск...");
+                        break;
+                    case "0":
+                        Console.ForegroundColor = ConsoleColor.Magenta;
+                        Console.WriteLine("Программа завершена.");
+                        return;
+                    default:
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        throw new Exception("Неверный выбор!");
                 }
             }
+            catch (ArgumentException ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"Ошибка: {ex.Message}");
+                Console.WriteLine("Нажмите любую клавишу для продолжения...");
+                Console.ReadKey();
+            }
+            catch (Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"Ошибка: {ex.Message}");
+                Console.WriteLine("Нажмите любую клавишу для продолжения...");
+                Console.ReadKey();
+            }
+            Console.ReadKey();
         }
     }
 }
